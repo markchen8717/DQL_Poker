@@ -75,11 +75,11 @@ for i in range(1,TOTAL_EPISODES+1):
     # obtain simulated player info
     for player in game_result['players']:
         for _player in hall_of_fame:
-            if _player._name == player['name']: #'''FIX'''
-                _player.set_uuid(player['uuid']) #'''FIX'''
-                emulator.register_player(_player._uuid, _player) #'''FIX'''
+            if _player.name == player['name']: 
+                _player.uuid = player['uuid']
+                emulator.register_player(_player.uuid, _player)
                 break
-    current_state = restore_game_state(hall_of_fame[0]._last_pre_flop_state) #'''FIX'''
+    current_state = restore_game_state(hall_of_fame[0].last_pre_flop_state)
 
     print("Simulating the game")
     while True:
