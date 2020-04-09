@@ -6,8 +6,6 @@ from DQL import State
 class DQLPlayer(BasePokerPlayer):  # Do not forget to make parent class as "BasePokerPlayer"
 
     def __init__(self, name, DQL_Agent):
-        #FIX 
-        #Removed prev_stack attribute
         self.agent = DQL_Agent
         self.name = name
         self.wins = 0
@@ -17,6 +15,7 @@ class DQLPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Base
         self.last_pre_flop_state = None
         self.round_start_stack = None
         self.hole_card = None
+        self.prev_stack = None
 
     def print(self):
         print("DQL_Player:")
@@ -67,6 +66,7 @@ class DQLPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Base
         for player in seats:
             if player["uuid"] == self.uuid:
                 self.round_start_stack = player["stack"]
+                self.prev_stack = player["stack"]
                 break
 
     def receive_street_start_message(self, street, round_state):

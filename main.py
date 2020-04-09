@@ -3,12 +3,9 @@ from DQL import DQL_Agent
 from DQL import DQN
 from DQL import ReplayMemory
 from dql_player import DQLPlayer
-from collections import namedtuple
 import numpy as np
-from pprint import pprint
 from pypokerengine.api.emulator import Emulator, Event
-from pypokerengine.utils.game_state_utils import\
-    restore_game_state, attach_hole_card, attach_hole_card_from_deck
+from pypokerengine.utils.game_state_utils import restore_game_state
 from pypokerengine.engine.poker_constants import PokerConstants as Const
 
 '''
@@ -42,9 +39,9 @@ ANTE = {"initial": 5, "growth": 2, "rate": 10}
 REPLAY_MEMORY_SIZE = 50  # poker hands
 REPLAY_MEMORY_BATCH_SIZE = 15
 EPSILON = 1  # 0-1 probability of exploration
-EPSILON_DECAY = 0.005  # 0-1 percentage to truncate epsilon by every new action '''FIX'''
-'''new_ep = old_ep * EPSILON_DECAY'''
-EPSILON_END = 0.15  # 0-1 minimum exploration probability '''FIX'''
+EPSILON_DECAY = 0.005  # 0-1 percentage to truncate epsilon by every new action 
+'''new_ep = old_ep * (1-EPSILON_DECAY)'''
+EPSILON_END = 0.15  # 0-1 minimum exploration probability
 '''new_ep = max(new_ep,EPSILON_END)'''
 DISCOUNT_FACTOR = 0.3  # 0-1 percetange to discount future q values by
 '''future_q *= DISCOUNT_FACTOR'''
@@ -53,7 +50,7 @@ J = 5  # update target network weights for every J fits
 
 # initialize dql agents with random weights
 # make sure to give each DQL_Agent an unique name
-hall_of_fame = [DQLPlayer(DQL_Agent(str(i),DQN(),
+hall_of_fame = [DQLPlayer(str(i),DQL_Agent(DQN(),
                                     ReplayMemory(
     REPLAY_MEMORY_SIZE, REPLAY_MEMORY_BATCH_SIZE),
     EPSILON, EPSILON_DECAY, EPSILON_END, DISCOUNT_FACTOR, J)) for i in range(8)]
@@ -70,7 +67,7 @@ for i in range(1,TOTAL_EPISODES+1):
         max_round=1, initial_stack=STARTING_STACK, small_blind_amount=SB)
     for player in hall_of_fame:
         config.register_player(
-            name=player._name, algorithm=player)
+            name=player.name, algorithm=player)
     game_result = start_poker(config, verbose=0)
     # obtain simulated player info
     for player in game_result['players']:
@@ -111,16 +108,16 @@ for i in range(1,TOTAL_EPISODES+1):
             winner = (player["uuid"],player["stack"])
         player_to_stack[player["uuid"]] = player["stack"]
     for _player in hall_of_fame:
-        if _player._uuid == winner[0]:
-            winner = (_player._name,winner[1])
+        if _player.uuid == winner[0]:
+            winner = (_player.name,winner[1])
     print("Player %s has won!"%(winner[0]))
     player_to_wins ={}
     for player in hall_of_fame:
-        if player._uuid == winner[0]:
+        if player.uuid == winner[0]:
             player.wins+=1
-        player_to_wins [player._uuid] = player.wins
+        player_to_wins [player.uuid] = player.wins
     print("Score board:", player_to_wins)
 
     print("Saving DQL models")
     for player in hall_of_fame:
-        player.agent.save_policy("player_"+player._name+".h5")
+        player.agent.save_policy("player_"+player.name+".h5")

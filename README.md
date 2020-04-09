@@ -5,8 +5,7 @@ A Python environment to create, train, and test Deep Q-learning agents that play
 -   install pipenv from pip
 -   create a virtual environment inside the project directory using the provided Pipfiles by running `pipenv install`
 
-## The DQL algorithm:
-
+## The DQL algorithm implemented:
 -   Initialize replay memory capacity.
 -   Initialize the policy network with random weights.
 -   Clone the policy network, and call it the target network.
@@ -26,3 +25,5 @@ A Python environment to create, train, and test Deep Q-learning agents that play
         -   Gradient descent updates weights in the policy network to minimize loss.
             -   After x time steps, weights in the target network are updated to the weights in the policy network.
 
+## Usage:
+A placeholder model is in place for demonstration. You may implement your own model by editing functions marked with `Implement me` inside the `DQL.py` file
