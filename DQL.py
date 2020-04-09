@@ -18,7 +18,6 @@ class State():
         self.DQL_player = DQL_player
         self.round_state = round_state
         self.model_input = None
-        self._pot = round_state["pot"]['main']['amount']
 
     '''Implement me'''
     # Implement the following function base on your model's input needs
@@ -31,11 +30,13 @@ class State():
             nb_player = sum(
                 [1 if player['state'] != 'folded' else 0 for player in self.round_state["seats"]])
             x1 = estimate_hole_card_win_rate(
-                nb_simulation=100, nb_player=nb_player, hole_card=hole_card, community_card=community_card)
+                nb_simulation=1000, nb_player=nb_player, hole_card=hole_card, community_card=community_card)
             self.model_input.append(x1)
-
-            player_index = [player['uuid']
-                            for player in self.round_state["seats"]].index(self.DQL_player.uuid)
+            
+            #print(self.round_state["seats"],self.DQL_player.uuid)
+            tmp_lst = [player['uuid']
+                            for player in self.round_state["seats"]]
+            player_index = tmp_lst.index(self.DQL_player.uuid)
             btn_index = self.round_state["dealer_btn"]
             x2 = (nb_player - ((btn_index-player_index+nb_player) %  # a score 0-1 on position, 1 being the button
                                nb_player)) / nb_player
@@ -86,11 +87,12 @@ class Action():
         self.valid_actions = valid_actions
         # Implement the following action_map base on what each action index
         # represents by your model.
+        pot = curr_state.round_state["pot"]["main"]["amount"]
         self.action_map = {0: {'action': 'fold', 'amount': 0, 'index': 0},
                            1: {'action': 'call', 'amount': valid_actions[1]['amount'], 'index': 1},
-                           2: {'action': 'raise', 'amount': int((1/3)*curr_state._pot), 'index': 2},
-                           3: {'action': 'raise', 'amount': int((3/4)*curr_state._pot), 'index': 3},
-                           4: {'action': 'raise', 'amount': int(curr_state._pot), 'index': 4}}
+                           2: {'action': 'raise', 'amount': int((1/3)*pot), 'index': 2},
+                           3: {'action': 'raise', 'amount': int((3/4)*pot), 'index': 3},
+                           4: {'action': 'raise', 'amount': int(pot), 'index': 4}}
         self.validify_action()
 
     '''Implement me'''
@@ -125,6 +127,7 @@ class DQN():
         self.model = keras.Sequential()
         self.model.add(keras.layers.Dense(
             100, input_shape=(5,), activation="sigmoid"))
+        self.model.add(keras.layers.Dense(100, activation="relu"))
         self.model.add(keras.layers.Dense(50, activation="relu"))
         self.model.add(keras.layers.Dense(5, activation="linear"))
         self.model.compile(

@@ -8,6 +8,9 @@
 # Mac/OSX
 .DS_Store
 
+#Keras model files
+*.h5
+
 # Windows
 Thumbs.db
 

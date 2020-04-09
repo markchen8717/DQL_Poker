@@ -55,27 +55,31 @@ hall_of_fame = [DQLPlayer(str(i),DQL_Agent(DQN(),
     REPLAY_MEMORY_SIZE, REPLAY_MEMORY_BATCH_SIZE),
     EPSILON, EPSILON_DECAY, EPSILON_END, DISCOUNT_FACTOR, J)) for i in range(8)]
 
+
+
+# set up the emulator
+emulator = Emulator()
+emulator.set_game_rule(player_num=len(
+    hall_of_fame), max_round=2**32, small_blind_amount=SB, ante_amount=ANTE["initial"])
+
+# simulate 1 round to obtain the starting game state and player info
+config = setup_config(
+    max_round=1, initial_stack=STARTING_STACK, small_blind_amount=SB)
+for player in hall_of_fame:
+    config.register_player(
+        name=player.name, algorithm=player)
+game_result = start_poker(config, verbose=0)
+# obtain simulated player info
+for player in game_result['players']:
+    for _player in hall_of_fame:
+        if _player.name == player['name']: 
+            _player.uuid = player['uuid']
+            emulator.register_player(_player.uuid, _player)
+            break
+        
 for i in range(1,TOTAL_EPISODES+1):
     print(">>>>>>>>>>Initializing game %d<<<<<<<<<<<<"%(i))
-    # set up the emulator
-    emulator = Emulator()
-    emulator.set_game_rule(player_num=len(
-        hall_of_fame), max_round=2**32, small_blind_amount=SB, ante_amount=ANTE["initial"])
 
-    # simulate 1 round to obtain the starting game state and player info
-    config = setup_config(
-        max_round=1, initial_stack=STARTING_STACK, small_blind_amount=SB)
-    for player in hall_of_fame:
-        config.register_player(
-            name=player.name, algorithm=player)
-    game_result = start_poker(config, verbose=0)
-    # obtain simulated player info
-    for player in game_result['players']:
-        for _player in hall_of_fame:
-            if _player.name == player['name']: 
-                _player.uuid = player['uuid']
-                emulator.register_player(_player.uuid, _player)
-                break
     current_state = restore_game_state(hall_of_fame[0].last_pre_flop_state)
 
     print("Simulating the game")
@@ -92,12 +96,12 @@ for i in range(1,TOTAL_EPISODES+1):
         print("Playing round %d"%(round_num))
         current_state, events = emulator.run_until_round_finish(current_state)
         #fit players
-        round_state = events[-1]["round_state"]
-        winners = events[-1]["winners"]
-        for player in hall_of_fame:
-            player.receive_round_result_message(winners,None,round_state)
         if Event.GAME_FINISH == events[-1]["type"]:
             break
+        else:
+            round_state = events[-1]["round_state"]
+            for player in hall_of_fame:
+                player.receive_round_result_message(None,None,round_state)
 
     print("Finished playing game %d"%(i))
     #calculate score

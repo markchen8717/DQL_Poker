@@ -80,7 +80,6 @@ class DQLPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Base
     def receive_round_result_message(self, winners, hand_info, round_state):
         if(not self.prev_action is None and not self.prev_state is None):
             #backtrack and obtain reward for previous action
-            round_state["winners"] = winners
             curr_state = State(round_state,self)
             reward = self.agent.get_reward(
                 self.prev_state, self.prev_action, curr_state, self)
