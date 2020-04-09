@@ -26,7 +26,7 @@ A Python Tensorflow with Keras environment to create, train, and test Deep Q-lea
             -   After x time steps, weights in the target network are updated to the weights in the policy network.
 
 This is the general DQL algorithm that I've implemented inside DQL_Poker.
-For more details regards to DQL, you may visit this amazing course by [Deep Lizard](https://deeplizard.com/learn/playlist/PLZbbT5o_s2xoWNVdDudn51XM8lOuZ_Njv)
+For more details regards to DQL, you may visit this amazing course by [Deep Lizard.](https://deeplizard.com/learn/playlist/PLZbbT5o_s2xoWNVdDudn51XM8lOuZ_Njv)
 
 ## Usage:
 -   A placeholder model is implemented for demonstration. You may implement your own model by editing functions marked with `Implement me` inside the `DQL.py` file
