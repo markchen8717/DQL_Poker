@@ -34,10 +34,10 @@ For each episode:
 # hyper parameters
 STARTING_STACK = 1500
 SB = 10  # small blind
-ANTE = {"initial": 5, "growth": 2, "rate": 10}
+ANTE = {"initial": 5, "growth": 3, "rate": 10}
 # increase by a factor of "growth" for every "rate" rounds
-REPLAY_MEMORY_SIZE = 50  # poker hands
-REPLAY_MEMORY_BATCH_SIZE = 15
+REPLAY_MEMORY_SIZE = 100  # actions
+REPLAY_MEMORY_BATCH_SIZE = 50
 EPSILON = 1  # 0-1 probability of exploration
 EPSILON_DECAY = 0.005  # 0-1 percentage to truncate epsilon by every new action 
 '''new_ep = old_ep * (1-EPSILON_DECAY)'''
@@ -45,8 +45,8 @@ EPSILON_END = 0.15  # 0-1 minimum exploration probability
 '''new_ep = max(new_ep,EPSILON_END)'''
 DISCOUNT_FACTOR = 0.3  # 0-1 percetange to discount future q values by
 '''future_q *= DISCOUNT_FACTOR'''
-TOTAL_EPISODES = 10  # number of poker games
-J = 5  # update target network weights for every J fits
+TOTAL_EPISODES = 100  # number of poker games
+J = 10  # update target network weights for every J fits
 
 # initialize dql agents with random weights
 # make sure to give each DQL_Agent an unique name
@@ -93,7 +93,7 @@ for i in range(1,TOTAL_EPISODES+1):
                                           ** (round_num//ANTE["rate"])))
         emulator.set_game_rule(player_num=len(
             hall_of_fame), max_round=2**32, small_blind_amount=SB, ante_amount=new_ante)
-        print("Playing round %d"%(round_num))
+        print("Playing round %d of game %d"%(round_num,i))
         current_state, events = emulator.run_until_round_finish(current_state)
         #fit players
         if Event.GAME_FINISH == events[-1]["type"]:
@@ -117,9 +117,9 @@ for i in range(1,TOTAL_EPISODES+1):
     print("Player %s has won!"%(winner[0]))
     player_to_wins ={}
     for player in hall_of_fame:
-        if player.uuid == winner[0]:
+        if player.name == winner[0]:
             player.wins+=1
-        player_to_wins [player.uuid] = player.wins
+        player_to_wins [player.name] = player.wins
     print("Score board:", player_to_wins)
 
     print("Saving DQL models")

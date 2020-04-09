@@ -30,7 +30,7 @@ class State():
             nb_player = sum(
                 [1 if player['state'] != 'folded' else 0 for player in self.round_state["seats"]])
             x1 = estimate_hole_card_win_rate(
-                nb_simulation=1000, nb_player=nb_player, hole_card=hole_card, community_card=community_card)
+                nb_simulation=500, nb_player=nb_player, hole_card=hole_card, community_card=community_card)
             self.model_input.append(x1)
             
             #print(self.round_state["seats"],self.DQL_player.uuid)
@@ -127,8 +127,8 @@ class DQN():
         self.model = keras.Sequential()
         self.model.add(keras.layers.Dense(
             100, input_shape=(5,), activation="sigmoid"))
+        self.model.add(keras.layers.Dense(500, activation="relu"))
         self.model.add(keras.layers.Dense(100, activation="relu"))
-        self.model.add(keras.layers.Dense(50, activation="relu"))
         self.model.add(keras.layers.Dense(5, activation="linear"))
         self.model.compile(
             optimizer="adam", loss="mean_squared_error", metrics=["accuracy"])
