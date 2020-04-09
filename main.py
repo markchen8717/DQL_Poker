@@ -93,7 +93,7 @@ for i in range(1,TOTAL_EPISODES+1):
         current_state, events = emulator.run_until_round_finish(current_state)
         #fit players
         round_state = events[-1]["round_state"]
-        winners = events[1]["winners"]
+        winners = events[-1]["winners"]
         for player in hall_of_fame:
             player.receive_round_result_message(winners,None,round_state)
         if Event.GAME_FINISH == events[-1]["type"]:

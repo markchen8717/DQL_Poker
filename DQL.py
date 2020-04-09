@@ -203,7 +203,7 @@ class DQL_Agent():
     def get_reward(self, prev_state, prev_action, new_state, DQL_player):
         prev_stack = DQL_player.prev_stack #stack size before making the action
         uuid_to_new_stack = {}
-        for player in new_state.seats:
+        for player in new_state.round_state["seats"]:
             uuid_to_new_stack[player['uuid']] = player['stack']
         new_stack = uuid_to_new_stack[DQL_player.uuid] #stack size after making the action
         if prev_stack == 0:
