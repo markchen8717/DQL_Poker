@@ -16,6 +16,7 @@ class DQLPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Base
         self.round_start_stack = None
         self.hole_card = None
         self.prev_stack = None
+        self.game_info = None
 
     def print(self):
         print("DQL_Player:")
@@ -58,7 +59,7 @@ class DQLPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Base
         return action.action, action.amount
 
     def receive_game_start_message(self, game_info):
-        pass
+        self.game_info = game_info
 
     def receive_round_start_message(self, round_count, hole_card, seats):
         self.reset_state_vars()  # reset state vars in the beginning of each hand

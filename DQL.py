@@ -42,7 +42,7 @@ class State():
                                nb_player)) / nb_player
             self.model_input.append(x2)
 
-            stack_total = 0
+            stack_total = self.DQL_player.game_info["player_num"] * self.DQL_player.game_info["rule"]["initial_stack"]
             player_stack = 0
             for player in self.round_state["seats"]:
                 stack_total += player["stack"]

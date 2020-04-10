@@ -55,7 +55,8 @@ hall_of_fame = [DQLPlayer(str(i),DQL_Agent(DQN(),
     REPLAY_MEMORY_SIZE, REPLAY_MEMORY_BATCH_SIZE),
     EPSILON, EPSILON_DECAY, EPSILON_END, DISCOUNT_FACTOR, J)) for i in range(8)]
 
-
+# for player in hall_of_fame:
+#     player.agent.load_model("player_"+str(player.name)+".h5")
 
 # set up the emulator
 emulator = Emulator()
