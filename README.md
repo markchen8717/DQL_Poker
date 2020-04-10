@@ -1,5 +1,5 @@
 # DQL_Poker
-A Python Tensorflow with Keras environment to create, train, and test Deep Q-learning agents that play no limit Texas hold 'em.
+A Python Tensorflow2 with Keras environment to create, train, and test Deep Q-learning agents that play no limit Texas hold 'em.
 
 ## Prerequisites
 -   install pipenv from pip
